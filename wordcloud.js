@@ -3,14 +3,14 @@
 *    EDIT SPREADSHEET ID WITH THE ONE    *
 *    CORRESPONDING TO THE COURSE         *  
 ******************************************/
-var SPREADSHEET_ID = '1ZSFPg8Ys4RsHUP7-fYA56AwxkgabY2sDogOJQj7WhgQ';
+var SPREADSHEET_ID = '';
 
 // Name of the sheet the responses are on 
 var SPREADSHEET_RANGE = 'Form Responses 1';
 
 // Client ID and API key from the Developer Console
-var CLIENT_ID = '1049517253069-dui0mhupd7gp58pp19i3j4gr1us382ah.apps.googleusercontent.com';
-var API_KEY = 'AIzaSyCUlMqXpYHBESZWT_XIXPZVy2BuKDnhZ10';
+var CLIENT_ID = '';
+var API_KEY = '';
 
 // Array of API discovery doc URLs for APIs used by the quickstart
 var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
