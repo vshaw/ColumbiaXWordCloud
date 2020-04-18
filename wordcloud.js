@@ -1,9 +1,24 @@
 
 /*****************************************
-*    EDIT SPREADSHEET ID WITH THE ONE    *
-*    CORRESPONDING TO THE COURSE         *  
+*    EDIT SPREADSHEET IDS HERE
+     
+     FORMAT SHOULD USE WEEK NUMBER OR CHAPTER TITLE
+
+     { WEEK NUMBER: ID } e.g. { 1: '1ZSFPg8Ys4RsHUP7-fYA56AwxkgabY2sDogOJQj7WhgQ'}
+     { CHAPTER TITLE: ID } e.g. { 'Introduction': '1ZSFPg8Ys4RsHUP7-fYA56AwxkgabY2sDogOJQj7WhgQ'}
+
+     OR YOU CAN ADD ONE SPREADSHEET FOR THE WHOLE COURSE
+
+     e.g. var SPREADSHEET_IDS = '1ZSFPg8Ys4RsHUP7-fYA56AwxkgabY2sDogOJQj7WhgQ';
+
 ******************************************/
-var SPREADSHEET_ID = '';
+ var SPREADSHEET_IDS = {
+    'Introduction to the course': '1ZSFPg8Ys4RsHUP7-fYA56AwxkgabY2sDogOJQj7WhgQ',
+    1: '1ZSFPg8Ys4RsHUP7-fYA56AwxkgabY2sDogOJQj7WhgQ',
+    2: '1ZSFPg8Ys4RsHUP7-fYA56AwxkgabY2sDogOJQj7WhgQ',
+    3: '1ZSFPg8Ys4RsHUP7-fYA56AwxkgabY2sDogOJQj7WhgQ',
+}; 
+
 
 // Name of the sheet the responses are on 
 var SPREADSHEET_RANGE = 'Form Responses 1';
@@ -24,21 +39,75 @@ gapi.load('client:auth2', initClient);
 }
 
 function initClient() {
-gapi.client.init({
-  apiKey: API_KEY,
-  clientId: CLIENT_ID,
-  discoveryDocs: DISCOVERY_DOCS,
-  scope: SCOPES
-}).then(function () {
+  gapi.client.init({
+    apiKey: API_KEY,
+    clientId: CLIENT_ID,
+    discoveryDocs: DISCOVERY_DOCS,
+    scope: SCOPES
+  }).then(function () {
 
-  loadChart(); 
+    var spreadsheetId; 
 
-});
+    if (typeof SPREADSHEET_IDS === "string" || SPREADSHEET_IDS instanceof String)
+    {
+      spreadsheetId = SPREADSHEET_IDS;
+    }
+    else
+    {
+      spreadsheetId = getSpreadsheetId(); 
+    }
+
+    if (spreadsheetId != null)
+    {
+        loadChart(spreadsheetId); 
+    }
+
+  });
 }
 
-function loadChart() {
+// Retrieve week number from the edx page, and check corresponding spreadsheet ID 
+function getSpreadsheetId() {
+
+  var array = document.getElementsByClassName("nav-item nav-item-chapter");
+
+  if (array != null && array.length > 0)
+  {
+    var chapterId = array[0].outerText; 
+
+    // If the week name is of the form "Week 1: Algorithms", just use the number mapping
+    if (chapterId.includes("Week"))
+    {
+      var week = chapterId.split(" ")[1];
+      var weekNum = week.split(":")[0];
+
+      console.log("weeknum: " + weekNum); 
+
+      if (SPREADSHEET_IDS[weekNum] != null)
+      {
+        return SPREADSHEET_IDS[weekNum];
+      }
+      else
+      {
+        console.log("No survey found for week " + weekNum);
+      }
+    }
+    else if (SPREADSHEET_IDS[chapterId] != null)
+    {
+      return SPREADSHEET_IDS[chapterId];
+    }
+    else
+    {
+      console.log("No survey found for week " + chapterId);
+    }
+  }
+
+  return null; 
+}
+
+
+function loadChart(spreadsheetId) {
   gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: SPREADSHEET_ID,
+    spreadsheetId: spreadsheetId,
     range: SPREADSHEET_RANGE,
   }).then(function(response) {
 
